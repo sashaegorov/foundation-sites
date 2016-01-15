@@ -161,7 +161,7 @@
    * @private
    */
   Tooltip.prototype._buildTemplate = function(id){
-    var templateClasses = (this.options.tooltipClass + ' ' + this.options.positionClass).trim();
+    var templateClasses = (this.options.tooltipClass + ' ' + this.options.positionClass + ' ' + this.options.templateClasses).trim();
     var $template =  $('<div></div>').addClass(templateClasses).attr({
       'role': 'tooltip',
       'aria-hidden': true,
@@ -246,7 +246,7 @@
 
   /**
    * reveals the tooltip, and fires an event to close any other open tooltips on the page
-   * @fires Closeme#tooltip
+   * @fires Tooltip#closeme
    * @fires Tooltip#show
    * @function
    */
