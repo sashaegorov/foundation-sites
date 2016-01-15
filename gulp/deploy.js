@@ -15,10 +15,18 @@ var inquirer = require('inquirer');
 var VERSIONED_FILES = [
   'bower.json',
   'composer.json',
+  'docs/pages/installation.md',
   'js/foundation.core.js',
   'meteor-README.md',
   'package.js',
-  'package.json'
+  'package.json',
+  'scss/foundation.scss'
+];
+
+var DIST_FILES = [
+  './_build/assets/css/foundation.css',
+  './_build/assets/css/foundation-flex.css',
+  '_build/assets/js/foundation.js'
 ];
 
 var CURRENT_VERSION = require('../package.json').version;
@@ -51,17 +59,17 @@ gulp.task('deploy:dist', ['sass:foundation', 'javascript:foundation'], function(
   var cssFilter = filter(['*.css']);
   var jsFilter  = filter(['*.js']);
 
-  return gulp.src(['./_build/assets/css/foundation.css', '_build/assets/js/foundation.js'])
+  return gulp.src(DIST_FILES)
     .pipe(cssFilter)
       .pipe(gulp.dest('./dist'))
       .pipe(minifyCss())
-      .pipe(rename('foundation.min.css'))
+      .pipe(rename({ suffix: '.min' }))
       .pipe(gulp.dest('./dist'))
     .pipe(cssFilter.restore())
     .pipe(jsFilter)
       .pipe(gulp.dest('./dist'))
       .pipe(uglify())
-      .pipe(rename('foundation.min.js'))
+      .pipe(rename({ suffix: '.min' }))
       .pipe(gulp.dest('./dist'));
 });
 
@@ -92,7 +100,7 @@ gulp.task('deploy:settings', function(cb) {
 gulp.task('deploy:commit', function(cb) {
   git.commitSync('Bump to version ' + NEXT_VERSION, ['-a']);
   git.tagSync('v' + NEXT_VERSION);
-  // git.push('origin', 'develop', cb);
+  git.push('origin', 'develop', '--tags', cb);
   cb();
 });
 

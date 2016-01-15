@@ -16,7 +16,9 @@ The flex grid is only supported in Chrome, Firefox, Safari 6+, IE10+, iOS 7+, an
 
 ## Importing
 
-The flex grid is not enabled by default. To use the default CSS, add the export mixin for the flex grid, and remove the default grid.
+If you're using the CSS version of Foundation, you'll need to generate a [custom download](http://foundation.zurb.com/sites/download/#customizeFoundation) that replaces the float grid with the flex grid.
+
+If you're using the Sass version of Foundation, remove the CSS export for the float grid, and replace it with the CSS export for the flex grid.
 
 ```scss
 @import 'foundation';
@@ -25,8 +27,12 @@ The flex grid is not enabled by default. To use the default CSS, add the export 
 @include foundation-flex-grid;
 ```
 
-<div class="callout primary">
-  <p>The standard grid and flex grid use the same classes, namely <code>.row</code> and <code>.column</code>, and don't play nice together. If you want to use both in the same project, we recommend using the Sass mixins for each grid, instead of the default CSS.</p>
+<div class="primary callout">
+  <p>The flex grid uses the same settings variables as the float grid to adjust gutter size, column count, and so on. Refer to the <a href="grid.html#sass-variables">Sass variable reference</a> for the default grid to see how the flex grid can be customized.</p>
+</div>
+
+<div class="warning callout">
+  <p>The standard grid and flex grid use some of the same classes, namely <code>.row</code> and <code>.column</code>, and don't play nice together. If you want to use both in the same project, we recommend using the Sass mixins for each grid, instead of the default CSS.</p>
 </div>
 
 ---
@@ -215,6 +221,55 @@ The same alignment classes can also be applied to individual columns.
   <div class="column align-bottom">Align bottom</div>
   <div class="column align-middle">Align middle</div>
   <div class="column align-top">Align top. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non harum laborum cum voluptate vel, eius adipisci similique dignissimos nobis at excepturi incidunt fugit molestiae quaerat, consequuntur porro temporibus. Nisi, ex?</div>
+</div>
+```
+
+---
+
+## Collapse/Uncollapse Rows
+
+The `.collapse` class lets you remove column gutters (padding).
+
+There are times when you won't want each media query to be collapsed or uncollapsed. In this case, use the media query size you want and collapse or uncollapse and add that to your row element. Example shows no gutter at small media size and then adds the gutter to columns at medium.
+
+```html
+<div class="row medium-uncollapse large-collapse">
+  <div class="small-6 columns">
+    Removes gutter at large media query
+  </div>
+  <div class="small-6 columns">
+    Removes gutter at large media query
+  </div>
+</div>
+```
+
+<p class="lead">Scale the browser down to a medium size to see the difference.</p>
+
+<div class="row medium-uncollapse large-collapse">
+  <div class="small-6 columns">
+    <div class="callout secondary">
+      <p class="show-for-medium-only">On a medium screen, I have gutters!</p>
+      <p class="show-for-large-up">On a large screen, I have no gutters!</p>
+    </div>
+  </div>
+  <div class="small-6 columns">
+    <div class="callout secondary">
+      <p class="show-for-medium-only">On a medium screen, I have gutters!</p>
+      <p class="show-for-large-up">On a large screen, I have no gutters!</p>
+    </div>
+  </div>
+</div>
+
+---
+
+## Offsets
+
+Offsets work identically to the float grid, by applying `margin-left` to a column.
+
+```html_example
+<div class="row">
+  <div class="small-4 large-offset-2 columns">Offset 2 on large</div>
+  <div class="small-4 columns">4 columns</div>
 </div>
 ```
 

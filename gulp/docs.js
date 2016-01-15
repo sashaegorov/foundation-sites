@@ -1,15 +1,22 @@
-var gulp = require('gulp');
 var cacheBust = require('gulp-cache-bust');
-var cached = require('gulp-cached');
-var supercollider = require('supercollider');
-var buildSearch = require('../lib/buildSearch');
+var foundationDocs = require('foundation-docs');
+var gulp = require('gulp');
+var newer = require('gulp-newer');
 var panini = require('panini');
+var supercollider = require('supercollider');
+
+var PANINI_CONFIG = {
+  root: 'docs/pages/',
+  layouts: 'docs/layout/',
+  partials: 'docs/partials/',
+  helpers: foundationDocs.handlebarsHelpers
+}
 
 supercollider
   .config({
-    template: 'docs/layout/component.html',
-    marked: require('../lib/marked'),
-    handlebars: require('../lib/handlebars'),
+    template: foundationDocs.componentTemplate,
+    marked: foundationDocs.marked,
+    handlebars: foundationDocs.handlebars,
     keepFm: true
   })
   .adapter('sass')
@@ -18,24 +25,28 @@ supercollider
 // Assembles the layout, pages, and partials in the docs folder
 gulp.task('docs', function() {
   return gulp.src('docs/pages/**/*')
-    .pipe(cached('docs'))
-    .pipe(supercollider.init())
-    .pipe(panini({
-      root: 'docs/pages/',
-      layouts: 'docs/layout/',
-      partials: 'docs/partials/'
+    .pipe(newer({
+      dest: '_build',
+      ext: '.html'
     }))
+    .pipe(supercollider.init())
+    .pipe(panini(PANINI_CONFIG))
     .pipe(cacheBust())
     .pipe(gulp.dest('_build'));
 });
 
-gulp.task('docs:reset', function() {
-  delete cached.caches['docs'];
-  gulp.run('docs');
+gulp.task('docs:all', function() {
+  panini.refresh();
+
+  return gulp.src('docs/pages/**/*')
+    .pipe(supercollider.init())
+    .pipe(panini(PANINI_CONFIG))
+    .pipe(cacheBust())
+    .pipe(gulp.dest('_build'));
 });
 
 gulp.task('docs:search', ['docs'], function(cb) {
-  buildSearch(supercollider.tree, cb);
+  foundationDocs.buildSearch(supercollider.tree, cb);
 });
 
 gulp.task('docs:debug', ['docs'], function(cb) {
